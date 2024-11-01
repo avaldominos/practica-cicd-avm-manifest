@@ -16,7 +16,7 @@ spec:
     spec:
         containers:
         - name: myapp
-          image: avaldominos/python-app:130
+          image: avaldominos/python-app:148
           imagePullPolicy: IfNotPresent
           ports:
           - containerPort: 5000
