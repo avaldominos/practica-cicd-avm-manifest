@@ -1,22 +1,42 @@
+# Specifies the API version and resource type; here it's a Deployment resource in the apps/v1 API group
 apiVersion: apps/v1
 kind: Deployment
+
 metadata:
+  # Name of the Deployment, used as a unique identifier within the namespace
   name: myapp-deployment
+  
+  # Labels to organize and select resources associated with this Deployment
   labels:
     app: myapp
+
 spec:
+  # Number of pod replicas to run for this Deployment
   replicas: 1
+
+  # Selector to match the pods managed by this Deployment based on specific labels
   selector:
     matchLabels:
       app: myapp
+
+  # Template that defines the pod's metadata and specification
   template:
     metadata:
+      # Labels applied to pods created by this Deployment, matching the selector above
       labels:
         app: myapp
+
     spec:
-        containers:
+      # Specification for the containers that will run in the pod
+      containers:
         - name: myapp
-          image: avaldominos/python-app:latest # <-- CircleCI will update this tag
-          imagePullPolicy: IfNotPresent
+          
+          # Docker image for the container, pulling the latest version of 'avaldominos/python-app'
+          image: avaldominos/python-app:latest # <-- CircleCI will update this tag to the latest build version
+          
+          # Image pull policy
+          imagePullPolicy: Always
+          
+          # Exposing the container's internal port, often where the app listens for incoming requests
           ports:
-          - containerPort: 5000
+            - containerPort: 5000 # Port on which the application inside the container will listen

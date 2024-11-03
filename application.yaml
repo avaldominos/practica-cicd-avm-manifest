@@ -1,20 +1,44 @@
+# Specifies the ArgoCD API version and resource type (Application in this case)
 apiVersion: argoproj.io/v1alpha1
 kind: Application
+
 metadata:
+  # Unique name for the ArgoCD application
   name: python-app-manifests
+  
+  # Namespace where ArgoCD resources are located; ArgoCD usually lives in the 'argocd' namespace
   namespace: argocd
+  
+  # Finalizer to ensure proper cleanup of resources managed by ArgoCD
   finalizers:
-  - resources-finalizer.argocd.argoproj.io
+    - resources-finalizer.argocd.argoproj.io
+
 spec:
   destination:
+    # Kubernetes namespace where the application will be deployed
     namespace: default
+    
+    # Specifies the Kubernetes cluster to deploy to, using the in-cluster service by default
     server: https://kubernetes.default.svc
+  
+  # Project within ArgoCD under which this application is categorized; often set to 'default'
   project: default
+
   source:
+    # Directory path within the repository containing Kubernetes manifests
     path: k8s
+    
+    # Repository URL where the Kubernetes manifests are stored
     repoURL: https://github.com/avaldominos/practica-cicd-avm-manifest/
+    
+    # Git branch or commit hash to use for deployment (e.g., main branch here)
     targetRevision: main
+
+  # Synchronization policy to control automated behavior for deployments
   syncPolicy:
     automated:
+      # When set to true, ArgoCD will automatically delete resources not defined in the manifests
       prune: false
+      
+      # When set to true, ArgoCD will automatically re-sync if any configuration drift is detected
       selfHeal: false

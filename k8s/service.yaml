@@ -1,32 +1,50 @@
-# python-app-service.yml
+# Service manifest for exposing the Python application within the Kubernetes cluster
 apiVersion: v1
 kind: Service
 metadata:
+  # Name of the service, which will be used to access the application internally within the cluster
   name: python-app-service
+
 spec:
+  # Service type ClusterIP makes it accessible only within the cluster (default type)
   type: ClusterIP
+  
+  # Selector to associate this service with the pods that have the label 'app: myapp'
   selector:
     app: myapp
+
+  # Port configuration for the service
   ports:
-    - protocol: TCP
-      port: 80
-      targetPort: 5000
+    - protocol: TCP       # Communication protocol
+      port: 80            # Port on which the service will be accessible internally
+      targetPort: 5000    # Port on the container where the application is listening (from Deployment)
+
 ---
+# Ingress manifest for exposing the Python application externally through an HTTP route
+
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
+  # Name of the Ingress resource
   name: python-app-ingress
+
+  # Annotations provide additional configuration; here, we specify using the nginx ingress controller
   annotations:
     kubernetes.io/ingress.class: nginx
+
 spec:
+  # Configuration of routing rules for the Ingress
   rules:
-    - host: python-app-127-0-0-1.nip.io
+    - host: python-app-127-0-0-1.nip.io  # Hostname that maps to the application's IP address (uses nip.io for dynamic DNS)
+      
       http:
         paths:
-          - path: /
-            pathType: ImplementationSpecific
+          - path: /                     # URL path for accessing the application
+            pathType: ImplementationSpecific # Matches the path type with controller-specific rules
+
+            # Backend service configuration
             backend:
               service:
-                name: python-app-service
+                name: python-app-service   # Name of the service to which the traffic should be routed
                 port:
-                  number: 80
+                  number: 80               # Port on the service that receives traffic from the Ingress
