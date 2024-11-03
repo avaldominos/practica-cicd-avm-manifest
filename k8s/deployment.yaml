@@ -32,7 +32,7 @@ spec:
         - name: myapp
           
           # Docker image for the container, pulling the latest version of 'avaldominos/python-app'
-          image: avaldominos/python-app:186
+          image: avaldominos/python-app:189
           
           # Image pull policy
           imagePullPolicy: Always
